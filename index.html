@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeisterDesk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #faf8f3;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --ink: #15161f;
+    --ink-muted: #5c5f74;
+    --ink-faint: #8b8e9f;
+    --line: #e6e2d6;
+    --line-strong: #d7d2c1;
+    --accent: #4c4fe0;
+    --accent-strong: #3436ad;
+    --accent-soft: #eceeff;
+    --accent-ink: #ffffff;
+    --shadow-color: 234 100% 30%;
+    --paper-dot: rgba(76, 79, 224, 0.10);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111219;
+      --surface: #181924;
+      --surface-raised: #1f2130;
+      --ink: #f3f1ea;
+      --ink-muted: #a3a6bd;
+      --ink-faint: #71748c;
+      --line: #2b2d3d;
+      --line-strong: #383b4f;
+      --accent: #9092f5;
+      --accent-strong: #b0b2ff;
+      --accent-soft: #262850;
+      --accent-ink: #14152a;
+      --paper-dot: rgba(144, 146, 245, 0.14);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #111219;
+    --surface: #181924;
+    --surface-raised: #1f2130;
+    --ink: #f3f1ea;
+    --ink-muted: #a3a6bd;
+    --ink-faint: #71748c;
+    --line: #2b2d3d;
+    --line-strong: #383b4f;
+    --accent: #9092f5;
+    --accent-strong: #b0b2ff;
+    --accent-soft: #262850;
+    --accent-ink: #14152a;
+    --paper-dot: rgba(144, 146, 245, 0.14);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(var(--paper-dot) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  img, svg { max-width: 100%; display: block; }
+
+  h1, h2, h3 {
+    font-family: "Fraunces", Georgia, "Times New Roman", serif;
+    font-weight: 600;
+    text-wrap: balance;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  p { margin: 0; }
+
+  a { color: inherit; }
+
+  .mono {
+    font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 20px; }
+  }
+
+  /* ---------- Header ---------- */
+
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    padding: 22px 0;
+    transition: background-color 0.35s ease, box-shadow 0.35s ease, backdrop-filter 0.35s ease, padding 0.3s ease;
+  }
+
+  header.site.scrolled {
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    box-shadow: 0 1px 0 var(--line), 0 12px 24px -18px hsl(var(--shadow-color) / 0.35);
+    padding: 14px 0;
+  }
+
+  .site-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    text-decoration: none;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(155deg, var(--accent), var(--accent-strong));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px -4px hsl(var(--shadow-color) / 0.5);
+  }
+
+  .brand-mark svg { width: 18px; height: 18px; }
+
+  nav.site-nav {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+
+  nav.site-nav a {
+    text-decoration: none;
+    color: var(--ink-muted);
+    font-size: 0.94rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  nav.site-nav a:hover, nav.site-nav a:focus-visible { color: var(--ink); }
+
+  @media (max-width: 760px) {
+    nav.site-nav .nav-links { display: none; }
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 10px;
+    padding: 11px 20px;
+    font-size: 0.93rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+    font-family: inherit;
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    box-shadow: 0 8px 20px -8px hsl(var(--shadow-color) / 0.55);
+  }
+
+  .btn-primary:hover { transform: translateY(-1px) scale(1.015); box-shadow: 0 12px 24px -8px hsl(var(--shadow-color) / 0.6); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line-strong);
+  }
+
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent-strong); transform: translateY(-1px); }
+
+  /* ---------- Reveal ---------- */
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  .reveal-stagger.in > * {
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal, .reveal.in { opacity: 1; transform: none; transition: none; }
+    #hero-card { transform: none !important; }
+  }
+
+  /* ---------- Hero ---------- */
+
+  .hero {
+    padding: 96px 0 88px;
+    position: relative;
+    overflow: hidden;
+    --mx: 50%;
+    --my: 30%;
+  }
+
+  .hero-spotlight {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(560px circle at var(--mx) var(--my), var(--accent-soft), transparent 65%);
+    opacity: 0.9;
+    transition: opacity 0.4s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-spotlight { display: none; }
+  }
+
+  .hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 56px;
+    align-items: center;
+  }
+
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.76rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+    padding: 7px 12px;
+    border-radius: 100px;
+    margin-bottom: 22px;
+    font-weight: 600;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 5.4vw, 3.85rem);
+    line-height: 1.04;
+    font-weight: 600;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent-strong);
+  }
+
+  .hero-sub {
+    margin-top: 24px;
+    font-size: 1.14rem;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    max-width: 46ch;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 34px;
+    flex-wrap: wrap;
+  }
+
+  .hero-trust {
+    margin-top: 40px;
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+
+  .hero-trust div { display: flex; flex-direction: column; gap: 2px; }
+
+  .hero-trust .num {
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hero-trust .label {
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.01em;
+  }
+
+  /* Hero visual: job ticket card */
+
+  .hero-visual {
+    position: relative;
+    perspective: 1200px;
+  }
+
+  #hero-card {
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: 0 30px 60px -30px hsl(var(--shadow-color) / 0.35), 0 2px 0 var(--line);
+    transition: transform 0.1s linear;
+    will-change: transform;
+  }
+
+  .ticket-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--line-strong);
+  }
+
+  .ticket-head .who {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ticket-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ticket-head .name { font-weight: 600; font-size: 0.95rem; }
+  .ticket-head .meta { font-size: 0.8rem; color: var(--ink-faint); }
+
+  .ticket-status {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: #1a7a4c;
+    background: rgba(26,122,76,0.12);
+    padding: 5px 10px;
+    border-radius: 100px;
+  }
+
+  .ticket-rows { padding-top: 16px; display: flex; flex-direction: column; gap: 0; }
+
+  .ticket-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9rem;
+  }
+
+  .ticket-row:last-child { border-bottom: none; }
+  .ticket-row .k { color: var(--ink-faint); }
+  .ticket-row .v { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .ticket-row .v.big { font-family: "Fraunces", serif; font-size: 1.3rem; color: var(--accent-strong); }
+
+  .ticket-footer {
+    margin-top: 18px;
+    background: var(--accent-soft);
+    border-radius: 12px;
+    padding: 13px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-strong);
+  }
+
+  .float-chip {
+    position: absolute;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 11px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    box-shadow: 0 16px 30px -18px hsl(var(--shadow-color) / 0.4);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .float-chip.a { top: -18px; right: -6px; color: var(--accent-strong); }
+  .float-chip.b { bottom: 10px; left: -26px; color: #1a7a4c; }
+
+  @media (max-width: 620px) {
+    .float-chip { display: none; }
+  }
+
+  /* ---------- Section shell ---------- */
+
+  section { padding: 84px 0; }
+
+  .section-head {
+    max-width: 620px;
+    margin-bottom: 52px;
+  }
+
+  .kicker {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.76rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .section-head h2 {
+    font-size: clamp(1.8rem, 3.4vw, 2.5rem);
+    font-weight: 600;
+  }
+
+  .section-head p {
+    margin-top: 16px;
+    color: var(--ink-muted);
+    font-size: 1.04rem;
+    line-height: 1.6;
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 0;
+  }
+
+  /* ---------- Features ---------- */
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 860px) {
+    .feature-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .feature-grid { grid-template-columns: 1fr; }
+  }
+
+  .feature-card {
+    background: var(--surface);
+    padding: 30px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .feature-num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+  }
+
+  .feature-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feature-card h3 { font-size: 1.12rem; font-weight: 600; margin-top: 4px; }
+
+  .feature-card p {
+    color: var(--ink-muted);
+    font-size: 0.94rem;
+    line-height: 1.55;
+  }
+
+  .feature-card {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.35s ease;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  .feature-card:hover {
+    background: var(--surface-raised);
+    z-index: 2;
+  }
+
+  .feature-icon {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .feature-card:hover .feature-icon {
+    background: var(--accent);
+    color: var(--accent-ink);
+    transform: scale(1.12) rotate(-6deg);
+  }
+
+  /* ---------- Marquee strip ---------- */
+
+  .marquee-strip {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--ink);
+    overflow: hidden;
+    padding: 16px 0;
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 32s linear infinite;
+    gap: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation: none; }
+  }
+
+  .marquee-track span {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    color: var(--bg);
+    opacity: 0.82;
+    padding: 0 28px;
+    white-space: nowrap;
+  }
+
+  .marquee-track span::after {
+    content: "◆";
+    color: var(--accent);
+    font-size: 0.6rem;
+    margin-left: 14px;
+  }
+
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ---------- Trades / Branchen tabs ---------- */
+
+  .trades-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+
+  .trade-tab {
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    padding: 11px 20px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .trade-tab:hover { border-color: var(--accent); color: var(--accent-strong); transform: translateY(-2px); }
+
+  .trade-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+    box-shadow: 0 10px 24px -12px hsl(var(--shadow-color) / 0.55);
+  }
+
+  .trade-panel {
+    display: none;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .trade-panel.active {
+    display: grid;
+    animation: trade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes trade-in {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .trade-panel.active { animation: none; }
+  }
+
+  @media (max-width: 860px) {
+    .trade-panel { grid-template-columns: 1fr; gap: 28px; }
+  }
+
+  .trade-intro .tag { font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; color: var(--accent-strong); letter-spacing: 0.06em; }
+  .trade-intro h3 { margin-top: 10px; font-size: 1.7rem; }
+  .trade-intro p { margin-top: 14px; color: var(--ink-muted); line-height: 1.65; font-size: 1rem; max-width: 42ch; }
+
+  .trade-benefits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (max-width: 480px) {
+    .trade-benefits { grid-template-columns: 1fr; }
+  }
+
+  .trade-benefits li {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  }
+
+  .trade-benefits li:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+  }
+
+  .trade-benefits .tb-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .trade-benefits .tb-title { font-weight: 600; font-size: 0.92rem; }
+  .trade-benefits .tb-desc { margin-top: 5px; font-size: 0.82rem; color: var(--ink-muted); line-height: 1.5; }
+
+  /* ---------- Workflow strip ---------- */
+
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+
+  @media (max-width: 760px) {
+    .flow { grid-template-columns: 1fr 1fr; row-gap: 32px; }
+  }
+
+  .flow-step {
+    padding-right: 24px;
+    position: relative;
+  }
+
+  .flow-step:not(:last-child)::after {
+    content: "→";
+    position: absolute;
+    right: -2px;
+    top: 2px;
+    color: var(--ink-faint);
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 760px) {
+    .flow-step:nth-child(2)::after { display: none; }
+    .flow-step:not(:last-child)::after { display: none; }
+  }
+
+  .flow-step .tag {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    color: var(--accent-strong);
+    letter-spacing: 0.04em;
+  }
+
+  .flow-step h4 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-top: 10px;
+  }
+
+  .flow-step p {
+    margin-top: 8px;
+    font-size: 0.88rem;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    max-width: 24ch;
+  }
+
+  /* ---------- Pricing ---------- */
+
+  .price-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 860px) {
+    .price-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+  }
+
+  .price-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 30px 26px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+
+  .price-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 40px -26px hsl(var(--shadow-color) / 0.4);
+  }
+
+  .price-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, var(--accent-soft), var(--surface) 42%);
+  }
+
+  .price-badge {
+    position: absolute;
+    top: -13px;
+    left: 26px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+  }
+
+  .price-name {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .price-amount {
+    margin-top: 14px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .price-amount .n {
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-size: 2.6rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .price-amount .u { color: var(--ink-faint); font-size: 0.95rem; }
+
+  .price-desc {
+    margin-top: 10px;
+    color: var(--ink-muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    min-height: 42px;
+  }
+
+  .price-list {
+    margin-top: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+    padding: 0;
+    list-style: none;
+  }
+
+  .price-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+
+  .price-list svg { flex-shrink: 0; margin-top: 2px; color: var(--accent-strong); }
+
+  .price-card .btn { margin-top: 26px; width: 100%; }
+
+  .price-note {
+    margin-top: 28px;
+    text-align: center;
+    font-size: 0.86rem;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Testimonial-ish quote ---------- */
+
+  .quote-block {
+    border-left: 3px solid var(--accent);
+    padding-left: 28px;
+  }
+
+  .quote-block p.q {
+    font-family: "Fraunces", serif;
+    font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+    font-weight: 500;
+    line-height: 1.45;
+    font-style: italic;
+  }
+
+  .quote-block .attrib {
+    margin-top: 20px;
+    font-size: 0.88rem;
+    color: var(--ink-faint);
+    font-family: "IBM Plex Mono", monospace;
+  }
+
+  /* ---------- FAQ ---------- */
+
+  .faq-list { display: flex; flex-direction: column; }
+
+  .faq-item { border-bottom: 1px solid var(--line); }
+  .faq-item:first-child { border-top: 1px solid var(--line); }
+
+  .faq-item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 22px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    font-weight: 600;
+    font-size: 1.02rem;
+  }
+
+  .faq-item summary::-webkit-details-marker { display: none; }
+
+  .faq-item .plus {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .faq-item .plus::before, .faq-item .plus::after {
+    content: "";
+    position: absolute;
+    background: var(--ink-muted);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+
+  .faq-item .plus::before { width: 10px; height: 1.4px; }
+  .faq-item .plus::after { width: 1.4px; height: 10px; }
+
+  .faq-item[open] .plus {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .faq-item[open] .plus::before, .faq-item[open] .plus::after { background: var(--accent-ink); }
+  .faq-item[open] .plus::after { transform: rotate(90deg) scaleY(0); }
+
+  .faq-item .a {
+    padding: 0 4px 24px;
+    color: var(--ink-muted);
+    font-size: 0.96rem;
+    line-height: 1.65;
+    max-width: 68ch;
+  }
+
+  /* ---------- CTA ---------- */
+
+  .cta-band {
+    background: linear-gradient(155deg, var(--accent-strong), var(--accent));
+    border-radius: 24px;
+    padding: 64px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: #ffffff;
+  }
+
+  .cta-band::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.16) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.5;
+  }
+
+  .cta-band > * { position: relative; }
+
+  .cta-band h2 {
+    font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+    color: #ffffff;
+  }
+
+  .cta-band p {
+    margin-top: 14px;
+    color: rgba(255,255,255,0.82);
+    font-size: 1.05rem;
+    max-width: 46ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cta-band .btn-primary {
+    background: #ffffff;
+    color: var(--accent-strong);
+    box-shadow: 0 10px 24px -10px rgba(0,0,0,0.4);
+  }
+
+  .cta-band .btn-ghost {
+    border-color: rgba(255,255,255,0.4);
+    color: #ffffff;
+  }
+  .cta-band .btn-ghost:hover { border-color: #fff; color: #fff; }
+
+  /* ---------- Footer ---------- */
+
+  footer.site {
+    border-top: 1px solid var(--line);
+    padding: 44px 0 40px;
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .footer-links a {
+    text-decoration: none;
+    color: var(--ink-muted);
+    font-size: 0.86rem;
+  }
+
+  .footer-links a:hover { color: var(--accent-strong); }
+
+  .footer-copy { font-size: 0.82rem; color: var(--ink-faint); }
+
+  .footer-brand { display: flex; align-items: center; gap: 8px; font-family: "Fraunces", serif; font-weight: 700; }
+  .footer-brand .brand-mark { width: 26px; height: 26px; border-radius: 7px; }
+  .footer-brand .brand-mark svg { width: 14px; height: 14px; }
+
+  /* progress bar */
+  #scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: var(--accent);
+    z-index: 60;
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+
+  /* ---------- Decorative parallax icons ---------- */
+
+  .deco-icon {
+    position: absolute;
+    color: var(--accent);
+    opacity: 0.16;
+    pointer-events: none;
+    will-change: transform;
+    z-index: 0;
+  }
+
+  @media (max-width: 760px) { .deco-icon { display: none; } }
+
+  /* ---------- Product tour (scrollytelling) ---------- */
+
+  .tour-grid {
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .tour-grid { grid-template-columns: 1fr; }
+  }
+
+  .tour-steps { display: flex; flex-direction: column; }
+
+  .tour-step {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 30px 0 30px 26px;
+    opacity: 0.32;
+    border-left: 2px solid var(--line);
+    transition: opacity 0.4s ease, border-color 0.4s ease;
+  }
+
+  .tour-step.active { opacity: 1; border-left-color: var(--accent); }
+
+  @media (max-width: 900px) {
+    .tour-step { min-height: auto; padding: 30px 0 30px 22px; opacity: 1; }
+  }
+
+  .tour-step .tag { font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; color: var(--accent-strong); letter-spacing: 0.06em; }
+  .tour-step h3 { margin-top: 10px; font-size: 1.5rem; }
+  .tour-step p { margin-top: 12px; color: var(--ink-muted); font-size: 1rem; line-height: 1.6; max-width: 40ch; }
+
+  .tour-visual {
+    position: sticky;
+    top: 110px;
+    height: 580px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 900px) {
+    .tour-visual { position: relative; top: 0; height: auto; margin-bottom: 8px; }
+  }
+
+  .phone {
+    width: 272px;
+    height: 552px;
+    border-radius: 38px;
+    background: var(--bg);
+    border: 8px solid var(--ink);
+    box-shadow: 0 40px 70px -30px hsl(var(--shadow-color) / 0.45);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phone::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 86px; height: 18px;
+    background: var(--ink);
+    border-radius: 0 0 13px 13px;
+    z-index: 5;
+  }
+
+  .phone-screen {
+    position: absolute;
+    inset: 0;
+    padding: 38px 15px 16px;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    background: var(--bg);
+  }
+
+  .phone-screen.active { opacity: 1; transform: translateY(0); }
+
+  .ps-title { font-family: "Fraunces", serif; font-weight: 600; font-size: 1rem; padding: 0 3px; }
+  .ps-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 11px; font-size: 0.8rem; }
+  .ps-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .ps-row + .ps-row { margin-top: 8px; }
+  .ps-bar { height: 6px; border-radius: 4px; background: var(--accent-soft); overflow: hidden; margin-top: 6px; }
+  .ps-bar > span { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+  .ps-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ps-stat .n { font-family: "Fraunces", serif; font-weight: 700; font-size: 1.15rem; display: block; }
+  .ps-stat .l { font-size: 0.66rem; color: var(--ink-faint); }
+  .ps-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-soft); color: var(--accent-strong); font-size: 0.68rem; font-weight: 600; padding: 4px 9px; border-radius: 100px; white-space: nowrap; }
+  .ps-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .ps-cal span { aspect-ratio: 1; border-radius: 6px; background: var(--surface); border: 1px solid var(--line); font-size: 0.6rem; display: flex; align-items: center; justify-content: center; color: var(--ink-faint); }
+  .ps-cal span.busy { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .ps-send { text-align: center; background: var(--accent); color: #fff; border: none !important; font-weight: 600; font-size: 0.82rem; padding: 12px; }
+  .ps-ok { text-align: center; color: var(--accent-strong); font-weight: 600; font-size: 0.78rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tour-step { opacity: 1 !important; }
+    .phone-screen { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<header class="site" id="site-header">
+  <div class="wrap site-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+      </span>
+      MeisterDesk
+    </a>
+    <nav class="site-nav">
+      <div class="nav-links">
+        <a href="#funktionen">Funktionen</a>
+        <a href="#branchen">Branchen</a>
+        <a href="#ablauf">Ablauf</a>
+        <a href="#preise">Preise</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <a class="btn btn-primary" href="https://app.meisterdesk.online" target="_blank" rel="noopener">Kostenlos starten</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" id="hero-section">
+    <div class="hero-spotlight" id="hero-spotlight"></div>
+    <svg class="deco-icon" data-speed="0.12" style="top:10%;left:3%;width:64px;height:64px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    <svg class="deco-icon" data-speed="0.22" style="top:66%;left:7%;width:44px;height:44px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+    <svg class="deco-icon" data-speed="0.18" style="top:20%;right:4%;width:50px;height:50px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M9 3H5a2 2 0 0 0-2 2v4"/><path d="M9 21H5a2 2 0 0 1-2-2v-4"/><path d="M15 3h4a2 2 0 0 1 2 2v4"/><path d="M15 21h4a2 2 0 0 0 2-2v-4"/></svg>
+    <div class="wrap hero-grid">
+      <div class="reveal in">
+        <span class="eyebrow">Software für Handwerksbetriebe</span>
+        <h1>Der Papierkram<br><em>erledigt sich</em><br>von der Baustelle aus.</h1>
+        <p class="hero-sub">MeisterDesk bündelt Aufträge, Belege, Angebote und Rechnungen in einer App — damit dein Büro abends leer ist und nicht dein Kopf.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://app.meisterdesk.online" target="_blank" rel="noopener">
+            Kostenlos starten
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="https://app.meisterdesk.online" target="_blank" rel="noopener">Demo ansehen</a>
+        </div>
+        <div class="hero-trust">
+          <div><span class="num mono"><span class="count-num" data-count="7">0</span>&nbsp;Tage</span><span class="label">kostenlos testen</span></div>
+          <div><span class="num mono"><span class="count-num" data-count="3">0</span></span><span class="label">Pakete, monatlich kündbar</span></div>
+          <div><span class="num mono">iOS · Android · Web</span><span class="label">überall dabei</span></div>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal in" style="transition-delay:120ms">
+        <div id="hero-card">
+          <div class="ticket-head">
+            <div class="who">
+              <span class="ticket-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+              </span>
+              <div>
+                <div class="name">Auftrag #1042 · Baustelle Nord</div>
+                <div class="meta">Beleg soeben gescannt</div>
+              </div>
+            </div>
+            <span class="ticket-status">Erkannt</span>
+          </div>
+          <div class="ticket-rows">
+            <div class="ticket-row"><span class="k">Händler</span><span class="v">Bauzentrum Huber</span></div>
+            <div class="ticket-row"><span class="k">Betrag</span><span class="v big mono">248,90&nbsp;€</span></div>
+            <div class="ticket-row"><span class="k">Zuordnung</span><span class="v">Auftrag #1042</span></div>
+          </div>
+          <div class="ticket-footer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Bereit für Rechnung & Steuerberater
+          </div>
+        </div>
+        <div class="float-chip a">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+          KI-Erkennung
+        </div>
+        <div class="float-chip b">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+          12 Std. gespart / Monat
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee-strip" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Keine Zettelwirtschaft mehr</span><span>KI-Belegerkennung inklusive</span><span>Alle Tools in jedem Paket</span><span>7 Tage kostenlos testen</span><span>iOS · Android · Web</span><span>Monatlich kündbar</span>
+      <span>Keine Zettelwirtschaft mehr</span><span>KI-Belegerkennung inklusive</span><span>Alle Tools in jedem Paket</span><span>7 Tage kostenlos testen</span><span>iOS · Android · Web</span><span>Monatlich kündbar</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- FEATURES -->
+  <section id="funktionen">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Funktionen</span>
+        <h2>Alles, was auf der Baustelle und im Büro zusammenläuft.</h2>
+        <p>Kein Modul-Wirrwarr, keine Insellösungen — sechs Bereiche, die sich gegenseitig mit Daten versorgen.</p>
+      </div>
+
+      <div class="feature-grid reveal reveal-stagger">
+        <div class="feature-card" style="--i:0">
+          <span class="feature-num mono">01</span>
+          <span class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+          <h3>Aufträge & Kunden</h3>
+          <p>Baustellen, Kunden und Fortschritt an einem Ort — vom ersten Angebot bis zur Abnahme.</p>
+        </div>
+        <div class="feature-card" style="--i:1">
+          <span class="feature-num mono">02</span>
+          <span class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg></span>
+          <h3>Belege mit KI</h3>
+          <p>Foto vom Beleg reicht. MeisterDesk erkennt Beträge und ordnet sie automatisch dem Auftrag zu.</p>
+        </div>
+        <div class="feature-card" style="--i:2">
+          <span class="feature-num mono">03</span>
+          <span class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h3"/></svg></span>
+          <h3>Angebote & Rechnungen</h3>
+          <p>Professionelle Dokumente in Minuten erstellen und den Überblick über offene Posten behalten.</p>
+        </div>
+        <div class="feature-card" style="--i:3">
+          <span class="feature-num mono">04</span>
+          <span class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
+          <h3>Zeiterfassung</h3>
+          <p>Arbeitszeiten je Mitarbeiter und Projekt erfassen — die Grundlage für Lohn und Kalkulation.</p>
+        </div>
+        <div class="feature-card" style="--i:4">
+          <span class="feature-num mono">05</span>
+          <span class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <h3>Mitarbeiterverwaltung</h3>
+          <p>Team-Logins mit klaren Rechten für Büro und Monteure — jeder sieht, was er sehen soll.</p>
+        </div>
+        <div class="feature-card" style="--i:5">
+          <span class="feature-num mono">06</span>
+          <span class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span>
+          <h3>Dashboard</h3>
+          <p>Umsatz, offene Posten und Auslastung des Betriebs auf einen Blick — ohne Excel-Turnen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRADES / BRANCHEN -->
+  <section id="branchen" style="background: var(--surface); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Branchen</span>
+        <h2>Für dein Gewerk gemacht — nicht nur "für Handwerker".</h2>
+        <p>MeisterDesk passt sich an, wie dein Betrieb wirklich arbeitet. Wähl dein Gewerk und sieh, was sich für dich konkret ändert.</p>
+      </div>
+
+      <div class="trades-tabs reveal" role="tablist" aria-label="Gewerke">
+        <button class="trade-tab active" data-trade="elektro" role="tab" aria-selected="true">⚡ Elektro</button>
+        <button class="trade-tab" data-trade="shk" role="tab" aria-selected="false">🔧 Sanitär & Heizung</button>
+        <button class="trade-tab" data-trade="maler" role="tab" aria-selected="false">🎨 Maler & Stuckateur</button>
+        <button class="trade-tab" data-trade="dach" role="tab" aria-selected="false">🏠 Dachdecker</button>
+        <button class="trade-tab" data-trade="tischler" role="tab" aria-selected="false">🪚 Tischler & Schreiner</button>
+        <button class="trade-tab" data-trade="bau" role="tab" aria-selected="false">🏗️ Bauunternehmen</button>
+      </div>
+
+      <div class="trades-panels reveal">
+        <div class="trade-panel active" data-trade="elektro">
+          <div class="trade-intro">
+            <span class="tag mono">Elektro</span>
+            <h3>Vom Prüfprotokoll bis zur Rechnung — ohne Zettel in der Tasche.</h3>
+            <p>Kleinaufträge, Störungsdienst und Prüftermine laufen bei Elektrikern oft parallel. MeisterDesk hält jeden Auftrag mit seinen Belegen und Notizen zusammen, egal wie kurzfristig er reinkommt.</p>
+          </div>
+          <ul class="trade-benefits">
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/></svg></span>
+              <div class="tb-title">Kleinaufträge in Sekunden anlegen</div>
+              <div class="tb-desc">Kunde, Adresse und Störungsbild direkt vom Handy aus erfassen — noch auf der Anfahrt.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/></svg></span>
+              <div class="tb-title">Material & Prüfmittel per Foto</div>
+              <div class="tb-desc">Beleg vom Elektrogroßhandel fotografieren — MeisterDesk ordnet ihn automatisch dem Auftrag zu.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+              <div class="tb-title">Rechnung direkt nach der Störung</div>
+              <div class="tb-desc">Kleinauftrag erledigt, Rechnung raus — bevor der nächste Termin beginnt.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
+              <div class="tb-title">Wiederkehrende Prüftermine</div>
+              <div class="tb-desc">E-Check- und Wartungstermine im Kalender, damit keine Frist untergeht.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="trade-panel" data-trade="shk">
+          <div class="trade-intro">
+            <span class="tag mono">Sanitär, Heizung, Klima</span>
+            <h3>Notdienst, Wartungsverträge und Ersatzteile — alles an einem Ort.</h3>
+            <p>Ob spontaner Rohrbruch oder jährlicher Heizungscheck: SHK-Betriebe brauchen schnellen Zugriff auf Kundenhistorie und Material — genau dafür ist MeisterDesk gebaut.</p>
+          </div>
+          <ul class="trade-benefits">
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></span>
+              <div class="tb-title">Notdienst-Rechnungen in Minuten</div>
+              <div class="tb-desc">Direkt vor Ort abrechnen, statt abends im Büro alles nachzutragen.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+              <div class="tb-title">Wartungsverträge im Blick</div>
+              <div class="tb-desc">Wiederkehrende Kunden und fällige Wartungen automatisch im Kalender.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg></span>
+              <div class="tb-title">Ersatzteil-Belege sofort zugeordnet</div>
+              <div class="tb-desc">Foto vom Großhandelsbeleg genügt — Betrag und Zuordnung erkennt die KI.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+              <div class="tb-title">Mehrere Monteure koordinieren</div>
+              <div class="tb-desc">Jeder Mitarbeiter sieht nur seine eigenen Aufträge und Termine.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="trade-panel" data-trade="maler">
+          <div class="trade-intro">
+            <span class="tag mono">Maler & Stuckateur</span>
+            <h3>Flächen kalkulieren, Angebote schreiben, Ergebnis festhalten.</h3>
+            <p>Bei Maler- und Stuckateurbetrieben entscheidet ein schnelles, sauberes Angebot oft über den Auftrag. MeisterDesk hilft von der Aufmaßnotiz bis zum fertigen Angebot.</p>
+          </div>
+          <ul class="trade-benefits">
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h3"/></svg></span>
+              <div class="tb-title">Angebote nach Fläche in Minuten</div>
+              <div class="tb-desc">Aufmaß erfassen, Material und Arbeitszeit kalkulieren, PDF-Angebot senden.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg></span>
+              <div class="tb-title">Vorher-Nachher-Fotos je Auftrag</div>
+              <div class="tb-desc">Fotodokumentation direkt am Auftrag speichern — praktisch bei Abnahme und Reklamation.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+              <div class="tb-title">Material- und Farbbelege sammeln</div>
+              <div class="tb-desc">Belege vom Fachhandel per Foto erfassen, statt Zettel im Auto zu sammeln.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
+              <div class="tb-title">Mehrere Baustellen parallel</div>
+              <div class="tb-desc">Trockenzeiten und Etappen verschiedener Baustellen im gemeinsamen Kalender.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="trade-panel" data-trade="dach">
+          <div class="trade-intro">
+            <span class="tag mono">Dachdecker</span>
+            <h3>Wetterabhängig planen, ohne den Überblick zu verlieren.</h3>
+            <p>Gerüst, Material und Wetterfenster bestimmen den Ablauf. MeisterDesk hält Kosten und Termine zusammen, damit kurzfristige Umplanungen nicht im Chaos enden.</p>
+          </div>
+          <ul class="trade-benefits">
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4"/><path d="M9 21H5a2 2 0 0 1-2-2v-4"/><path d="M15 3h4a2 2 0 0 1 2 2v4"/><path d="M15 21h4a2 2 0 0 0 2-2v-4"/></svg></span>
+              <div class="tb-title">Baustellen-Kalender fürs Wetter</div>
+              <div class="tb-desc">Termine schnell verschieben, ohne dass Kunde oder Team den Überblick verlieren.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span>
+              <div class="tb-title">Gerüst- und Materialkosten im Blick</div>
+              <div class="tb-desc">Alle Kostenpositionen einer Baustelle gesammelt — für saubere Nachkalkulation.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div class="tb-title">Abnahme-Fotos dokumentiert</div>
+              <div class="tb-desc">Fotos der fertigen Fläche direkt am Auftrag — als Nachweis bei Gewährleistung.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+              <div class="tb-title">Kolonnen getrennt einsehen</div>
+              <div class="tb-desc">Jedes Team sieht nur seine eigene Baustelle — Verwechslungen ausgeschlossen.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="trade-panel" data-trade="tischler">
+          <div class="trade-intro">
+            <span class="tag mono">Tischler & Schreiner</span>
+            <h3>Vom Aufmaß in der Werkstatt bis zur Montage beim Kunden.</h3>
+            <p>Individuelle Möbel und Einbauten brauchen genaue Kalkulation. MeisterDesk verbindet Aufmaß, Materialkosten und Arbeitszeit zu einem Angebot, das wirklich stimmt.</p>
+          </div>
+          <ul class="trade-benefits">
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h3"/></svg></span>
+              <div class="tb-title">Individuelle Angebote mit Aufmaß</div>
+              <div class="tb-desc">Maße, Holzart und Beschläge direkt ins Angebot übernehmen — kein Abtippen.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
+              <div class="tb-title">Werkstattzeit je Projekt erfassen</div>
+              <div class="tb-desc">Genaue Arbeitszeit pro Möbelstück — Basis für realistische Kalkulation beim nächsten Mal.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg></span>
+              <div class="tb-title">Materialbelege dem Projekt zuordnen</div>
+              <div class="tb-desc">Holz- und Beschlagbelege per Foto direkt der richtigen Werkstattaufgabe zuordnen.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span>
+              <div class="tb-title">Montagetermin & Lieferung planen</div>
+              <div class="tb-desc">Werkstattfertigstellung und Montagetermin beim Kunden im selben Kalender.</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="trade-panel" data-trade="bau">
+          <div class="trade-intro">
+            <span class="tag mono">Bauunternehmen</span>
+            <h3>Mehrere Gewerke, mehrere Baustellen, ein gemeinsamer Überblick.</h3>
+            <p>Größere Bauunternehmen koordinieren viele Mitarbeiter über mehrere Baustellen hinweg. MeisterDesk skaliert mit — jeder Mitarbeiter, jede Baustelle, ein System.</p>
+          </div>
+          <ul class="trade-benefits">
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span>
+              <div class="tb-title">Alle Baustellen auf einem Dashboard</div>
+              <div class="tb-desc">Umsatz, offene Posten und Auslastung über den gesamten Betrieb hinweg.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <div class="tb-title">Unbegrenzte Team-Logins</div>
+              <div class="tb-desc">Jeder Mitarbeiter, jedes Gewerk mit eigenem Zugang — ohne Aufpreis pro Kopf.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
+              <div class="tb-title">Zeiterfassung je Baustelle</div>
+              <div class="tb-desc">Arbeitszeiten aller Kolonnen sauber getrennt — Grundlage für Lohn und Nachkalkulation.</div>
+            </li>
+            <li>
+              <span class="tb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h3"/></svg></span>
+              <div class="tb-title">Sammelrechnungen für Großkunden</div>
+              <div class="tb-desc">Mehrere Bauabschnitte eines Kunden gesammelt und übersichtlich abrechnen.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <!-- FLOW -->
+  <section id="ablauf" style="background: var(--surface); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Ein typischer Tag</span>
+        <h2>Von der Baustelle zur bezahlten Rechnung.</h2>
+      </div>
+      <div class="flow reveal">
+        <div class="flow-step">
+          <span class="tag mono">07:30</span>
+          <h4>Auftrag öffnen</h4>
+          <p>Adresse, Kunde und Notizen sind schon da — direkt am Handy auf der Baustelle.</p>
+        </div>
+        <div class="flow-step">
+          <span class="tag mono">11:15</span>
+          <h4>Beleg fotografieren</h4>
+          <p>Material gekauft, Foto gemacht — Betrag und Zuordnung erkennt die KI von selbst.</p>
+        </div>
+        <div class="flow-step">
+          <span class="tag mono">16:00</span>
+          <h4>Angebot schreiben</h4>
+          <p>Aus den erfassten Posten wird mit wenigen Klicks ein sauberes PDF-Angebot.</p>
+        </div>
+        <div class="flow-step">
+          <span class="tag mono">Monatsende</span>
+          <h4>An Steuerberater</h4>
+          <p>Alle Belege und Rechnungen liegen exportfertig bereit — kein Schuhkarton mehr.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT TOUR -->
+  <section class="product-tour">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">In der App</span>
+        <h2>So fühlt sich ein Arbeitstag mit MeisterDesk an.</h2>
+        <p>Scroll weiter — das Handy rechts zeigt live, wovon der Text gerade spricht.</p>
+      </div>
+
+      <div class="tour-grid">
+        <div class="tour-steps">
+          <div class="tour-step active" data-screen="dashboard">
+            <span class="tag mono">Morgens, 7:30 Uhr</span>
+            <h3>Dashboard: alles auf einen Blick</h3>
+            <p>Umsatz, offene Posten und die Aufträge der Woche siehst du sofort beim Öffnen — kein Suchen, kein Excel.</p>
+          </div>
+          <div class="tour-step" data-screen="beleg">
+            <span class="tag mono">Auf der Baustelle</span>
+            <h3>Beleg fotografieren, fertig</h3>
+            <p>Ein Foto genügt. Die KI erkennt Betrag und Händler und ordnet den Beleg direkt dem richtigen Auftrag zu.</p>
+          </div>
+          <div class="tour-step" data-screen="rechnung">
+            <span class="tag mono">Zurück im Büro</span>
+            <h3>Rechnung in unter einer Minute</h3>
+            <p>Aus den erfassten Posten wird mit wenigen Klicks eine saubere, professionelle Rechnung.</p>
+          </div>
+          <div class="tour-step" data-screen="kalender">
+            <span class="tag mono">Für die Woche</span>
+            <h3>Termine im Blick behalten</h3>
+            <p>Alle Baustellen und Team-Einsätze in einem Kalender — für Büro und Monteure gleichermaßen sichtbar.</p>
+          </div>
+        </div>
+
+        <div class="tour-visual reveal">
+          <div class="phone" id="tour-phone">
+            <div class="phone-screen active" data-screen="dashboard">
+              <div class="ps-title">Guten Morgen, Team Nord</div>
+              <div class="ps-stat-grid">
+                <div class="ps-card ps-stat"><span class="n mono">18.420&nbsp;€</span><span class="l">Umsatz · Monat</span></div>
+                <div class="ps-card ps-stat"><span class="n mono">6</span><span class="l">offene Posten</span></div>
+              </div>
+              <div class="ps-card">
+                <div class="ps-row"><span>Auslastung Team</span><span class="mono">78%</span></div>
+                <div class="ps-bar"><span style="width:78%"></span></div>
+              </div>
+              <div class="ps-card">
+                <div class="ps-row"><span>Auftrag #1042</span><span class="ps-chip">Baustelle Nord</span></div>
+                <div class="ps-row"><span>Auftrag #1039</span><span class="ps-chip">Fertig</span></div>
+              </div>
+            </div>
+
+            <div class="phone-screen" data-screen="beleg">
+              <div class="ps-title">Beleg erkannt</div>
+              <div class="ps-card">
+                <div class="ps-row"><span>Händler</span><span class="mono">Bauzentrum Huber</span></div>
+                <div class="ps-row"><span>Betrag</span><span class="mono" style="font-weight:700;">248,90&nbsp;€</span></div>
+                <div class="ps-row"><span>Zuordnung</span><span class="ps-chip">Auftrag #1042</span></div>
+              </div>
+              <div class="ps-card ps-ok">✓ Bereit für Rechnung & Steuerberater</div>
+            </div>
+
+            <div class="phone-screen" data-screen="rechnung">
+              <div class="ps-title">Rechnung #R-0231</div>
+              <div class="ps-card">
+                <div class="ps-row"><span>Material</span><span class="mono">640,00&nbsp;€</span></div>
+                <div class="ps-row"><span>Arbeitszeit (8 Std.)</span><span class="mono">560,00&nbsp;€</span></div>
+                <div class="ps-row"><span>Anfahrt</span><span class="mono">45,00&nbsp;€</span></div>
+              </div>
+              <div class="ps-card" style="display:flex;justify-content:space-between;font-weight:700;"><span>Gesamt</span><span class="mono">1.245,00&nbsp;€</span></div>
+              <div class="ps-card ps-send">Rechnung senden</div>
+            </div>
+
+            <div class="phone-screen" data-screen="kalender">
+              <div class="ps-title">Diese Woche</div>
+              <div class="ps-cal">
+                <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+                <span class="busy">1</span><span>2</span><span class="busy">3</span><span class="busy">4</span><span>5</span><span>6</span><span>7</span>
+              </div>
+              <div class="ps-card">
+                <div class="ps-row"><span>08:00</span><span>Baustelle Nord</span></div>
+                <div class="ps-row"><span>13:30</span><span>Angebot Fam. Meyer</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <section>
+    <div class="wrap">
+      <div class="quote-block reveal">
+        <p class="q">"Wir haben Handwerksbetriebe gebaut — nicht für sie geraten. MeisterDesk macht genau die drei Dinge gut, die abends noch offen sind: Belege, Angebote, Überblick."</p>
+        <p class="attrib">— Xaver Eckstein, Gründer von MeisterDesk</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="preise" style="background: var(--surface); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center;">
+        <span class="kicker" style="display:block;text-align:center;">Preise</span>
+        <h2>Ein Paket passend zur Teamgröße — <em style="font-style:italic;color:var(--accent-strong);">jedes mit vollem Funktionsumfang.</em></h2>
+        <p style="margin-left:auto;margin-right:auto;">Keine Funktions-Limits, keine gesperrten Tools, keine Staffelpreise pro Mitarbeiter — jedes Paket enthält alle Werkzeuge unbegrenzt. Der Unterschied ist die Teamgröße und der Support, den du bekommst.</p>
+      </div>
+
+      <div class="price-grid reveal reveal-stagger">
+        <div class="price-card" style="--i:0">
+          <span class="price-name mono">Essential</span>
+          <div class="price-amount"><span class="n mono">175&nbsp;€</span><span class="u">/ Monat</span></div>
+          <p class="price-desc">Für kleine Teams bis 5 Mitarbeitende — voller Funktionsumfang inklusive.</p>
+          <ul class="price-list">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Alle Funktionen ohne Limit</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Unbegrenzte Belege mit KI-Erkennung</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Unbegrenzte Team-Logins</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Community-Support</li>
+          </ul>
+          <a class="btn btn-ghost" href="https://app.meisterdesk.online" target="_blank" rel="noopener">Essential wählen</a>
+        </div>
+
+        <div class="price-card featured" style="--i:1">
+          <span class="price-badge">Empfohlen</span>
+          <span class="price-name mono">Premium</span>
+          <div class="price-amount"><span class="n mono">300&nbsp;€</span><span class="u">/ Monat</span></div>
+          <p class="price-desc">Für Teams bis 10 Mitarbeitende — derselbe volle Funktionsumfang, mehr Betreuung.</p>
+          <ul class="price-list">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Alle Funktionen ohne Limit</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Unbegrenzte Team-Logins</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Priorisierter Support</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Persönlicher Onboarding-Call</li>
+          </ul>
+          <a class="btn btn-primary" href="https://app.meisterdesk.online" target="_blank" rel="noopener">Premium wählen</a>
+        </div>
+
+        <div class="price-card" style="--i:2">
+          <span class="price-name mono">Plus</span>
+          <div class="price-amount"><span class="n mono">450&nbsp;€</span><span class="u">/ Monat</span></div>
+          <p class="price-desc">Ab 10 Mitarbeitenden — derselbe volle Funktionsumfang, White-Glove-Betreuung.</p>
+          <ul class="price-list">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Alle Funktionen ohne Limit</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Unbegrenzte Team-Logins</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Dedizierter Ansprechpartner</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Individuelle Einrichtung fürs Team</li>
+          </ul>
+          <a class="btn btn-ghost" href="https://app.meisterdesk.online" target="_blank" rel="noopener">Plus wählen</a>
+        </div>
+      </div>
+      <p class="price-note reveal">Alle Preise zzgl. gesetzl. USt., soweit anwendbar. Details siehe <a href="https://app.meisterdesk.online/agb" target="_blank" rel="noopener" style="color:var(--accent-strong);">AGB</a>.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap" style="max-width: 800px;">
+      <div class="section-head reveal">
+        <span class="kicker">Fragen & Antworten</span>
+        <h2>Bevor du startest.</h2>
+      </div>
+      <div class="faq-list reveal">
+        <details class="faq-item" open>
+          <summary>Muss ich etwas installieren?<span class="plus"></span></summary>
+          <div class="a">Nein. MeisterDesk läuft im Browser auf jedem Gerät. Zusätzlich gibt es Apps für iPhone und Android, die du direkt vom Home-Bildschirm aus öffnen kannst.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Wie sicher sind meine Daten?<span class="plus"></span></summary>
+          <div class="a">Alle Daten werden verschlüsselt übertragen und bei europäischen Auftragsverarbeitern gespeichert. Details findest du in unserer <a href="https://app.meisterdesk.online/datenschutz" target="_blank" rel="noopener" style="color:var(--accent-strong);">Datenschutzerklärung</a>.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Kann ich jederzeit kündigen?<span class="plus"></span></summary>
+          <div class="a">Ja. Alle Pakete sind monatlich zum Ende des Abrechnungsmonats kündbar — ganz ohne Mindestlaufzeit oder Kündigungsfrist.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Was passiert nach der Testphase?<span class="plus"></span></summary>
+          <div class="a">Du testest 7 Tage kostenlos. Danach startet dein gewähltes Paket automatisch und wird abgerechnet — jederzeit monatlich kündbar.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Für welche Gewerke ist MeisterDesk gedacht?<span class="plus"></span></summary>
+          <div class="a">MeisterDesk ist gewerkeoffen gebaut — von Elektro über Sanitär bis Trockenbau. Alles, was zählt, sind Aufträge, Belege und Rechnungen, und die sehen in jedem Handwerk ähnlich aus.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section>
+    <div class="wrap">
+      <div class="cta-band reveal">
+        <h2>Bereit, den Papierkram loszuwerden?</h2>
+        <p>Registrier deinen Betrieb in unter zwei Minuten — 7 Tage kostenlos testen, danach startet dein Abo automatisch.</p>
+        <div class="cta-actions">
+          <a class="btn btn-primary" href="https://app.meisterdesk.online" target="_blank" rel="noopener">Jetzt kostenlos starten</a>
+          <a class="btn btn-ghost" href="https://app.meisterdesk.online" target="_blank" rel="noopener">Zur Web-App</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap footer-inner">
+    <a class="footer-brand" href="#top">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>
+      </span>
+      MeisterDesk
+    </a>
+    <div class="footer-links">
+      <a href="https://app.meisterdesk.online" target="_blank" rel="noopener">Web-App</a>
+      <a href="https://app.meisterdesk.online/impressum" target="_blank" rel="noopener">Impressum</a>
+      <a href="https://app.meisterdesk.online/datenschutz" target="_blank" rel="noopener">Datenschutz</a>
+      <a href="https://app.meisterdesk.online/agb" target="_blank" rel="noopener">AGB</a>
+    </div>
+    <span class="footer-copy">© 2026 XE Handel · MeisterDesk</span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var header = document.getElementById('site-header');
+    var progress = document.getElementById('scroll-progress');
+
+    function onScroll() {
+      var y = window.scrollY || document.documentElement.scrollTop;
+      header.classList.toggle('scrolled', y > 12);
+
+      var h = document.documentElement;
+      var scrollable = h.scrollHeight - h.clientHeight;
+      var pct = scrollable > 0 ? (y / scrollable) * 100 : 0;
+      progress.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!reduced && 'IntersectionObserver' in window) {
+      var targets = document.querySelectorAll('.reveal:not(.in)');
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+      targets.forEach(function (t) { io.observe(t); });
+    } else {
+      document.querySelectorAll('.reveal').forEach(function (t) { t.classList.add('in'); });
+    }
+
+    // subtle parallax tilt on hero card, mouse-driven, desktop only
+    var card = document.getElementById('hero-card');
+    if (card && !reduced && window.matchMedia('(pointer: fine)').matches) {
+      var bounds;
+      card.addEventListener('mouseenter', function () { bounds = card.getBoundingClientRect(); });
+      card.addEventListener('mousemove', function (e) {
+        if (!bounds) bounds = card.getBoundingClientRect();
+        var px = (e.clientX - bounds.left) / bounds.width - 0.5;
+        var py = (e.clientY - bounds.top) / bounds.height - 0.5;
+        card.style.transform = 'rotateY(' + (px * 6) + 'deg) rotateX(' + (py * -6) + 'deg)';
+      });
+      card.addEventListener('mouseleave', function () {
+        card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+      });
+    }
+
+    // gentle scroll parallax for hero visual
+    var visual = document.querySelector('.hero-visual');
+    if (visual && !reduced) {
+      window.addEventListener('scroll', function () {
+        var y = window.scrollY || 0;
+        if (y < 800) {
+          visual.style.transform = 'translateY(' + (y * 0.06) + 'px)';
+        }
+      }, { passive: true });
+    }
+
+    // decorative background icons drift at their own speed while scrolling
+    var decoIcons = document.querySelectorAll('.deco-icon');
+    if (decoIcons.length && !reduced) {
+      window.addEventListener('scroll', function () {
+        var y = window.scrollY || 0;
+        decoIcons.forEach(function (icon) {
+          var speed = parseFloat(icon.getAttribute('data-speed')) || 0.1;
+          icon.style.transform = 'translateY(' + (y * speed) + 'px) rotate(' + (y * speed * 0.15) + 'deg)';
+        });
+      }, { passive: true });
+    }
+
+    // count-up numbers in the hero stats
+    function animateCount(el) {
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      if (isNaN(target)) return;
+      var start = null;
+      var duration = 900;
+      function step(ts) {
+        if (!start) start = ts;
+        var progress = Math.min((ts - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * target);
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    var countEls = document.querySelectorAll('.count-num[data-count]');
+    if (reduced) {
+      countEls.forEach(function (el) { el.textContent = el.getAttribute('data-count'); });
+    } else {
+      setTimeout(function () { countEls.forEach(animateCount); }, 350);
+    }
+
+    // scrollytelling product tour: the phone mockup follows whichever step is centered
+    var tourSteps = document.querySelectorAll('.tour-step');
+    var tourScreens = document.querySelectorAll('.phone-screen');
+    if (tourSteps.length && tourScreens.length) {
+      var setActiveScreen = function (name) {
+        tourSteps.forEach(function (s) { s.classList.toggle('active', s.getAttribute('data-screen') === name); });
+        tourScreens.forEach(function (s) { s.classList.toggle('active', s.getAttribute('data-screen') === name); });
+      };
+      if ('IntersectionObserver' in window) {
+        var tourIo = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) setActiveScreen(entry.target.getAttribute('data-screen'));
+          });
+        }, { threshold: 0, rootMargin: '-45% 0px -45% 0px' });
+        tourSteps.forEach(function (s) { tourIo.observe(s); });
+      }
+    }
+
+    // hero spotlight follows the cursor
+    var heroSection = document.getElementById('hero-section');
+    var heroSpot = document.getElementById('hero-spotlight');
+    if (heroSection && heroSpot && !reduced && window.matchMedia('(pointer: fine)').matches) {
+      heroSection.addEventListener('mousemove', function (e) {
+        var r = heroSection.getBoundingClientRect();
+        var mx = ((e.clientX - r.left) / r.width) * 100;
+        var my = ((e.clientY - r.top) / r.height) * 100;
+        heroSection.style.setProperty('--mx', mx + '%');
+        heroSection.style.setProperty('--my', my + '%');
+      });
+    }
+
+    // branchen tabs: switch active trade panel
+    var tradeTabs = document.querySelectorAll('.trade-tab');
+    var tradePanels = document.querySelectorAll('.trade-panel');
+    tradeTabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var name = tab.getAttribute('data-trade');
+        tradeTabs.forEach(function (t) {
+          var isActive = t === tab;
+          t.classList.toggle('active', isActive);
+          t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+        tradePanels.forEach(function (p) { p.classList.toggle('active', p.getAttribute('data-trade') === name); });
+      });
+    });
+
+    // magnetic pull on primary/ghost buttons, desktop only
+    if (!reduced && window.matchMedia('(pointer: fine)').matches) {
+      document.querySelectorAll('.btn').forEach(function (btn) {
+        btn.addEventListener('mousemove', function (e) {
+          var r = btn.getBoundingClientRect();
+          var mx = e.clientX - (r.left + r.width / 2);
+          var my = e.clientY - (r.top + r.height / 2);
+          btn.style.transform = 'translate(' + (mx * 0.18) + 'px,' + (my * 0.35) + 'px)';
+        });
+        btn.addEventListener('mouseleave', function () { btn.style.transform = ''; });
+      });
+    }
+
+    // subtle 3D tilt on feature cards and price cards, desktop only
+    if (!reduced && window.matchMedia('(pointer: fine)').matches) {
+      document.querySelectorAll('.feature-card, .price-card').forEach(function (el) {
+        el.addEventListener('mousemove', function (e) {
+          var r = el.getBoundingClientRect();
+          var px = (e.clientX - r.left) / r.width - 0.5;
+          var py = (e.clientY - r.top) / r.height - 0.5;
+          el.style.transform = 'perspective(800px) rotateY(' + (px * 5) + 'deg) rotateX(' + (py * -5) + 'deg) translateY(-2px)';
+        });
+        el.addEventListener('mouseleave', function () { el.style.transform = ''; });
+      });
+    }
+  })();
+</script>
+</body>
+</html>

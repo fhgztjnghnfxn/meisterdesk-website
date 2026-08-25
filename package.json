@@ -1,0 +1,12 @@
+{
+  "name": "meisterdesk-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Eigenständige Marketing-Website für MeisterDesk (meisterdesk.online)",
+  "scripts": {
+    "start": "serve -s . -l ${PORT:-3000}"
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+}
